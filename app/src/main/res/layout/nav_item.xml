@@ -16,7 +16,7 @@
             android:id="@+id/itemIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@{item.icon}"
+            android:imageResource="@{item.icon}"
             tools:src="@drawable/ic_bulb_on" />
 
         <TextView

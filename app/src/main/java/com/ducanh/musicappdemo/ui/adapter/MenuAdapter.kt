@@ -1,10 +1,8 @@
 package com.ducanh.musicappdemo.ui.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.data.entity.MenuItem
 import com.ducanh.musicappdemo.databinding.NavItemBinding
 
@@ -28,8 +26,6 @@ class MenuAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.binding.item = item
-
-        holder.binding.itemIcon.setImageResource(R.drawable.ic_bulb_on)
 
 //        var sharedPref =
 //            context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)

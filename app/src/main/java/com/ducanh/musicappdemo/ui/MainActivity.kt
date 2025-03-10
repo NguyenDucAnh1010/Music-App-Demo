@@ -15,6 +15,8 @@ import com.ducanh.musicappdemo.databinding.ActivityMainBinding
 import com.ducanh.musicappdemo.ui.adapter.MenuAdapter
 import com.ducanh.musicappdemo.ui.adapter.OnMenuClickListener
 import com.ducanh.musicappdemo.ui.fragment.discover.DiscoverFragment
+import com.ducanh.musicappdemo.ui.fragment.favorite.FavoriteFragment
+import com.ducanh.musicappdemo.ui.fragment.mymusic.MyMusicFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), OnMenuClickListener {
@@ -46,27 +48,31 @@ class MainActivity : AppCompatActivity(), OnMenuClickListener {
         )
         binding.main.addDrawerListener(toggle)
         toggle.syncState()
+
+        binding.navHeader.ivClose.setOnClickListener {
+            binding.main.closeDrawer(GravityCompat.START)
+        }
+
         val menuItems = listOf(
-            MenuItem(R.drawable.ic_bulb_on, "Home"),
-            MenuItem(R.drawable.ic_user, "Profile"),
-            MenuItem(R.drawable.ic_heart, "Settings"),
-            MenuItem(R.drawable.ic_globe_americas, "Logout")
+            MenuItem(R.drawable.ic_bulb_on, R.string.kham_pha),
+            MenuItem(R.drawable.ic_user, R.string.nhac_cua_toi),
+            MenuItem(R.drawable.ic_heart, R.string.bai_hat_yeu_thich),
+            MenuItem(R.drawable.ic_globe_americas, R.string.ngon_ngu)
         )
 
-        // Setup RecyclerView
         binding.rvMenu.layoutManager = LinearLayoutManager(this)
         binding.rvMenu.adapter = MenuAdapter(menuItems,this)
 
         replaceFragment(DiscoverFragment())
-
-        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, HomeFragment()).commit()
-//            navigationView.setCheckedItem(R.id.nav_home)
-        }
     }
 
     override fun onItemClick(menuItem: MenuItem) {
+        when(menuItem.icon){
+            R.drawable.ic_bulb_on -> replaceFragment(DiscoverFragment())
+            R.drawable.ic_user -> replaceFragment(FavoriteFragment())
+            R.drawable.ic_heart -> replaceFragment(MyMusicFragment())
+            else -> replaceFragment(DiscoverFragment())
+        }
         binding.main.closeDrawer(GravityCompat.START)
     }
 

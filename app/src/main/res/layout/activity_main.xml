@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -10,8 +9,8 @@
         android:layout_height="match_parent"
         android:background="@color/background"
         android:fitsSystemWindows="true"
-        tools:openDrawer="start"
-        tools:context=".ui.MainActivity">
+        tools:context=".ui.MainActivity"
+        tools:openDrawer="start">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,8 +21,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/background"
                 android:layout_marginStart="12dp"
+                android:background="@color/background"
                 android:fitsSystemWindows="true"
                 app:navigationIcon="@drawable/ic_menu" />
 
@@ -37,16 +36,18 @@
             android:layout_width="265dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:orientation="vertical"
-            android:background="@color/background">
+            android:background="@color/background"
+            android:orientation="vertical">
 
-            <include layout="@layout/nav_header"/>
+            <include
+                android:id="@+id/nav_header"
+                layout="@layout/nav_header" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical" />
         </LinearLayout>
 
     </androidx.drawerlayout.widget.DrawerLayout>

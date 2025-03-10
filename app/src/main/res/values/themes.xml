@@ -24,6 +24,10 @@
         <item name="fontFamily">@font/roboto_medium</item>
     </style>
 
+    <style name="font_semi_bold" parent="base_font">
+        <item name="fontFamily">@font/roboto_semi_bold</item>
+    </style>
+
     <style name="font_medium_14" parent="font_bold">
         <item name="android:textSize">14sp</item>
     </style>
@@ -40,5 +44,8 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="font_semi_bold_24" parent="font_semi_bold">
+        <item name="android:textSize">24sp</item>
+    </style>
 
 </resources>

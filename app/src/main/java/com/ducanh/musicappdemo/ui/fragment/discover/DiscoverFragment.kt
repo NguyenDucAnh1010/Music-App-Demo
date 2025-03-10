@@ -32,49 +32,11 @@ class DiscoverFragment : Fragment(), OnSongClickListener {
     ): View? {
         _binding = FragmentDiscoverBinding.inflate(inflater, container, false)
 
-//        songAdapter = SongAdapter(songList, this)
         binding.rvSongs.layoutManager = GridLayoutManager(requireContext(), 2)
-//        binding.rvSongs.adapter = songAdapter
         fetchSongs()
 
         return binding.root
     }
-
-//    private fun fetchSongs() {
-//        val url = "https://m.vuiz.net/getlink/mp3zing/api.php?hotsong"
-//        val client = OkHttpClient()
-//        val request = Request.Builder().url(url).build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                Log.e("API_ERROR", "Lỗi khi gọi API: ${e.message}")
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                response.body?.use { responseBody ->
-//                    val jsonString = responseBody.string()
-//
-//                    val listType = object : TypeToken<List<Map<String, Any>>>() {}.type
-//                    val jsonList: List<Map<String, Any>> = Gson().fromJson(jsonString, listType)
-//
-//                    val songs = jsonList.mapNotNull { jsonObject ->
-//                        val id = jsonObject["id"] as? String ?: return@mapNotNull null
-//                        val title = jsonObject["title"] as? String ?: return@mapNotNull null
-//                        val artist =
-//                            jsonObject["artists_names"] as? String ?: return@mapNotNull null
-//                        val thumbnail = jsonObject["thumbnail"] as? String ?: return@mapNotNull null
-//                        Song(id, title, artist, thumbnail)
-//                    }
-//
-//                    activity?.runOnUiThread {
-//                        songList.clear()
-//                        songList.addAll(songs)
-//                        songAdapter.notifyDataSetChanged()
-//                    }
-//                }
-//            }
-//        })
-//    }
 
     private fun fetchSongs() {
         viewLifecycleOwner.lifecycleScope.launch {

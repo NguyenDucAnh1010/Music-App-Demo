@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/nav_discover"
+        android:icon="@drawable/ic_bulb_on"
+        android:title="@string/kham_pha"/>
+
+    <item
+        android:id="@+id/nav_my_music"
+        android:icon="@drawable/ic_user"
+        android:title="@string/nhac_cua_toi"/>
+
+    <item
+        android:id="@+id/nav_favorite"
+        android:icon="@drawable/ic_heart"
+        android:title="@string/bai_hat_yeu_thich"/>
+
+    <item
+        android:id="@+id/nav_language"
+        android:icon="@drawable/ic_globe_americas"
+        android:title="@string/ngon_ngu"/>
+</menu>

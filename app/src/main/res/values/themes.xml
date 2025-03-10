@@ -6,4 +6,39 @@
     </style>
 
     <style name="Theme.MusicAppDemo" parent="Base.Theme.MusicAppDemo" />
+
+    <style name="base_font">
+        <item name="android:textColor">@color/font_clor</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="font_regular" parent="base_font">
+        <item name="fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="font_bold" parent="base_font">
+        <item name="fontFamily">@font/roboto_bold</item>
+    </style>
+
+    <style name="font_medium" parent="base_font">
+        <item name="fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="font_medium_14" parent="font_bold">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="font_bold_24" parent="font_bold">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="font_regular_20" parent="font_regular">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="font_regular_10" parent="font_regular">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+
 </resources>

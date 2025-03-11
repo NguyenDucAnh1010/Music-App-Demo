@@ -7,9 +7,9 @@ interface ApiService {
     @GET("api.php?hotsong")
     suspend fun getSongs(): List<Song>
 
-    companion object {
-        fun create(): ApiService {
-            return RetrofitInstance.retrofit.create(ApiService::class.java)
-        }
-    }
+//    companion object {
+//        fun create(): ApiService {
+//            return RetrofitInstance.retrofit.create(ApiService::class.java)
+//        }
+//    }
 }

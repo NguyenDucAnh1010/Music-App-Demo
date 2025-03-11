@@ -9,28 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.ducanh.musicappdemo.data.entity.MenuItem
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentMyMusicBinding
-import com.ducanh.musicappdemo.presentation.repository.SongRespositoryStoreImpl
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
 import com.ducanh.musicappdemo.ui.viewmodel.MyMusicViewModel
-import com.ducanh.musicappdemo.ui.viewmodel.MyMusicViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MyMusicFragment : Fragment() , OnSongClickListener{
+@AndroidEntryPoint
+class MyMusicFragment : Fragment(), OnSongClickListener {
     private var _binding: FragmentMyMusicBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<MyMusicViewModel> {
-        MyMusicViewModelFactory(
-            SongRespositoryStoreImpl(
-                requireContext()
-            )
-        )
-    }
+    private val viewModel: MyMusicViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

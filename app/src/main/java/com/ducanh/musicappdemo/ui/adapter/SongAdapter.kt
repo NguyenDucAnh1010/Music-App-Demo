@@ -38,9 +38,9 @@ class SongAdapter(
 //        holder.binding.tvMean.textSize = textSize
 
 
-//        holder.itemView.setOnClickListener {
-//            listener.onItemClick(item)
-//        }
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(item)
+        }
     }
 
     override fun getItemCount(): Int = items.size

@@ -3,52 +3,67 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/main"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
-        android:fitsSystemWindows="true"
-        tools:context=".ui.MainActivity"
-        tools:openDrawer="start">
+        android:background="@color/background">
 
-        <LinearLayout
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_marginStart="12dp"
-                android:background="@color/background"
-                android:fitsSystemWindows="true"
-                app:navigationIcon="@drawable/ic_menu" />
-
-            <FrameLayout
-                android:id="@+id/fragment_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="265dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
             android:background="@color/background"
-            android:orientation="vertical">
+            android:fitsSystemWindows="true"
+            tools:context=".ui.MainActivity"
+            tools:openDrawer="start">
 
-            <include
-                android:id="@+id/nav_header"
-                layout="@layout/nav_header" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvMenu"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical" />
-        </LinearLayout>
+                android:orientation="vertical">
 
-    </androidx.drawerlayout.widget.DrawerLayout>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginStart="12dp"
+                    android:background="@color/background"
+                    android:fitsSystemWindows="true"
+                    app:navigationIcon="@drawable/ic_menu" />
+
+                <FrameLayout
+                    android:id="@+id/fragment_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="265dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@color/background"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/nav_header"
+                    layout="@layout/nav_header" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/background">
+
+            <include layout="@layout/bar_music_player" />
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -18,7 +18,9 @@ import com.ducanh.musicappdemo.ui.fragment.discover.DiscoverFragment
 import com.ducanh.musicappdemo.ui.fragment.favorite.FavoriteFragment
 import com.ducanh.musicappdemo.ui.fragment.mymusic.MyMusicFragment
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnMenuClickListener {
     private lateinit var binding: ActivityMainBinding
 

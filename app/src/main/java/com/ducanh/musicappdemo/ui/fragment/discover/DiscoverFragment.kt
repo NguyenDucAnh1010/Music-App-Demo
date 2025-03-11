@@ -1,5 +1,6 @@
 package com.ducanh.musicappdemo.ui.fragment.discover
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,30 +11,23 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.ducanh.musicappdemo.data.api.ApiService
-import com.ducanh.musicappdemo.data.entity.MenuItem
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentDiscoverBinding
-import com.ducanh.musicappdemo.presentation.repository.SongRepositoryApiImpl
+import com.ducanh.musicappdemo.ui.DetailActivity
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
 import com.ducanh.musicappdemo.ui.viewmodel.DiscoverViewModel
-import com.ducanh.musicappdemo.ui.viewmodel.DiscoverViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentDiscoverBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<DiscoverViewModel> {
-        DiscoverViewModelFactory(
-            SongRepositoryApiImpl(
-                ApiService.create()
-            )
-        )
-    }
+    private val viewModel: DiscoverViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -115,6 +109,8 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
     }
 
     override fun onItemClick(song: Song) {
-
+        val intent = Intent(requireContext(), DetailActivity::class.java)
+        intent.putExtra("song", song)
+        startActivity(intent)
     }
 }

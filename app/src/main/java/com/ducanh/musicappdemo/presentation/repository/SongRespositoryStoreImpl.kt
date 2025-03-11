@@ -3,8 +3,11 @@ package com.ducanh.musicappdemo.presentation.repository
 import android.content.Context
 import android.provider.MediaStore
 import com.ducanh.musicappdemo.data.entity.Song
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
 
-class SongRespositoryStoreImpl(private val context: Context):SongRespositoryStore {
+@ViewModelScoped
+class SongRespositoryStoreImpl @Inject constructor(private val context: Context):SongRespositoryStore {
     override fun getAllMySongs(): List<Song> {
         val songList = mutableListOf<Song>()
 

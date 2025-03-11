@@ -28,7 +28,15 @@
         <item name="fontFamily">@font/roboto_semi_bold</item>
     </style>
 
-    <style name="font_medium_14" parent="font_bold">
+    <style name="font_medium_20" parent="font_medium">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="font_medium_18" parent="font_medium">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="font_medium_14" parent="font_medium">
         <item name="android:textSize">14sp</item>
     </style>
 

@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ducanh.musicappdemo.data.database.SongDatabase
 import com.ducanh.musicappdemo.data.entity.MenuItem
+import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentFavoriteBinding
 import com.ducanh.musicappdemo.presentation.repository.SongRepositoryImpl
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
@@ -71,7 +72,7 @@ class FavoriteFragment : Fragment(), OnSongClickListener {
         return binding.root
     }
 
-    override fun onItemClick(menuItem: MenuItem) {
+    override fun onItemClick(song: Song) {
 
     }
 }

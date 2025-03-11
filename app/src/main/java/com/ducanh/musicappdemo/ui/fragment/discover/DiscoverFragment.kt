@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ducanh.musicappdemo.data.api.ApiService
 import com.ducanh.musicappdemo.data.entity.MenuItem
+import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentDiscoverBinding
 import com.ducanh.musicappdemo.presentation.repository.SongRepositoryApiImpl
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
@@ -113,7 +114,7 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
         }
     }
 
-    override fun onItemClick(menuItem: MenuItem) {
+    override fun onItemClick(song: Song) {
 
     }
 }

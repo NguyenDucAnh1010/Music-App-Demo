@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ducanh.musicappdemo.data.entity.MenuItem
+import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentMyMusicBinding
 import com.ducanh.musicappdemo.presentation.repository.SongRespositoryStoreImpl
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
@@ -70,7 +71,7 @@ class MyMusicFragment : Fragment() , OnSongClickListener{
         return binding.root
     }
 
-    override fun onItemClick(menuItem: MenuItem) {
+    override fun onItemClick(song: Song) {
 
     }
 }

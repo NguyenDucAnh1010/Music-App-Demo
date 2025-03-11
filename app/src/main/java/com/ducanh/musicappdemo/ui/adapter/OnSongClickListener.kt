@@ -1,7 +1,7 @@
 package com.ducanh.musicappdemo.ui.adapter
 
-import com.ducanh.musicappdemo.data.entity.MenuItem
+import com.ducanh.musicappdemo.data.entity.Song
 
 interface OnSongClickListener {
-    fun onItemClick(menuItem: MenuItem)
+    fun onItemClick(song: Song)
 }

@@ -1,18 +1,77 @@
 package com.ducanh.musicappdemo.ui.fragment.favorite
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ducanh.musicappdemo.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import com.ducanh.musicappdemo.data.database.SongDatabase
+import com.ducanh.musicappdemo.data.entity.MenuItem
+import com.ducanh.musicappdemo.databinding.FragmentFavoriteBinding
+import com.ducanh.musicappdemo.presentation.repository.SongRepositoryImpl
+import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
+import com.ducanh.musicappdemo.ui.adapter.SongAdapter
+import com.ducanh.musicappdemo.ui.viewmodel.FavoriteViewModel
+import com.ducanh.musicappdemo.ui.viewmodel.FavoriteViewModelFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class FavoriteFragment : Fragment() {
+class FavoriteFragment : Fragment(), OnSongClickListener {
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel by viewModels<FavoriteViewModel> {
+        FavoriteViewModelFactory(
+            SongRepositoryImpl(
+                SongDatabase.getDatabase(requireContext())!!.songDao()
+            )
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false)
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+
+        binding.rvSongs.layoutManager = GridLayoutManager(requireContext(), 2)
+
+        binding.progressBar.visibility = View.VISIBLE
+
+        viewModel.songs.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                try {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.ivNoSong.visibility = View.GONE
+                    binding.txtNoSong.visibility = View.GONE
+                    if (isAdded) {
+                        delay(3000)
+                        binding.progressBar.visibility = View.GONE
+                        if (it.isNullOrEmpty()) {
+                            binding.ivNoSong.visibility = View.VISIBLE
+                            binding.txtNoSong.visibility = View.VISIBLE
+                        } else {
+                            binding.ivNoSong.visibility = View.GONE
+                            binding.txtNoSong.visibility = View.GONE
+                            binding.rvSongs.adapter = SongAdapter(it, this@FavoriteFragment)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("DiscoverFragment", "Lỗi API: ${e.message}", e)
+                }
+            }
+        }
+
+        viewModel.getAllFavoriteSong()
+
+        return binding.root
+    }
+
+    override fun onItemClick(menuItem: MenuItem) {
+
     }
 }

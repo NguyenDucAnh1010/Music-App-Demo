@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity(), OnMenuClickListener {
     override fun onItemClick(menuItem: MenuItem) {
         when(menuItem.icon){
             R.drawable.ic_bulb_on -> replaceFragment(DiscoverFragment())
-            R.drawable.ic_user -> replaceFragment(FavoriteFragment())
-            R.drawable.ic_heart -> replaceFragment(MyMusicFragment())
+            R.drawable.ic_user -> replaceFragment(MyMusicFragment())
+            R.drawable.ic_heart -> replaceFragment(FavoriteFragment())
             else -> replaceFragment(DiscoverFragment())
         }
         binding.main.closeDrawer(GravityCompat.START)

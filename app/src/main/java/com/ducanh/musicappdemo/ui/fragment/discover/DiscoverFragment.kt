@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ducanh.musicappdemo.data.api.ApiService
 import com.ducanh.musicappdemo.data.entity.MenuItem
 import com.ducanh.musicappdemo.databinding.FragmentDiscoverBinding
@@ -20,7 +22,7 @@ import com.ducanh.musicappdemo.ui.viewmodel.SongViewModelFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DiscoverFragment : Fragment(), OnSongClickListener {
+class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentDiscoverBinding? = null
     private val binding get() = _binding!!
@@ -41,6 +43,8 @@ class DiscoverFragment : Fragment(), OnSongClickListener {
 
         binding.rvSongs.layoutManager = GridLayoutManager(requireContext(), 2)
 
+        binding.swipeRefreshLayout.setOnRefreshListener(this)
+
         binding.progressBar.visibility = View.VISIBLE
 
         viewModel.songs.observe(viewLifecycleOwner) {
@@ -50,7 +54,7 @@ class DiscoverFragment : Fragment(), OnSongClickListener {
                     binding.ivNoSong.visibility = View.GONE
                     binding.txtNoSong.visibility = View.GONE
                     if (isAdded) {
-                        delay(1500)
+                        delay(3000)
                         binding.progressBar.visibility = View.GONE
                         if (it.isNullOrEmpty()) {
                             binding.ivNoSong.visibility = View.VISIBLE
@@ -70,6 +74,10 @@ class DiscoverFragment : Fragment(), OnSongClickListener {
         viewModel.getAllSongApi()
 
         return binding.root
+    }
+
+    override fun onRefresh() {
+
     }
 
     override fun onItemClick(menuItem: MenuItem) {

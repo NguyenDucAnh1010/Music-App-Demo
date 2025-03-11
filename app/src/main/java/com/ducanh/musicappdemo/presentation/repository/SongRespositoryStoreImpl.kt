@@ -31,7 +31,7 @@ class SongRespositoryStoreImpl(private val context: Context):SongRespositoryStor
                 val artist = cursor.getString(artistColumn)
                 val data = cursor.getString(dataColumn)
 
-                songList.add(Song(id, title, artist, data))
+                songList.add(Song(id, title, artist,"", data))
             }
         }
         return songList

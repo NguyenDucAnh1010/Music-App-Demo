@@ -44,14 +44,14 @@
                     style="@style/font_medium_18"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tên bài hát" />
+                    android:text="@string/Believer" />
 
                 <TextView
                     android:id="@+id/tv_artist"
                     style="@style/font_regular_10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tên ca sĩ"
+                    android:text="@string/IMAGINE_DRAGON"
                     android:textColor="@color/tv_artist" />
             </LinearLayout>
 

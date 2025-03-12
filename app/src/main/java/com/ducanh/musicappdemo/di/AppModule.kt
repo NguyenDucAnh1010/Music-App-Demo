@@ -12,6 +12,7 @@ import com.ducanh.musicappdemo.presentation.repository.SongRepositoryApiImpl
 import com.ducanh.musicappdemo.presentation.repository.SongRepositoryImpl
 import com.ducanh.musicappdemo.presentation.repository.SongRespositoryStore
 import com.ducanh.musicappdemo.presentation.repository.SongRespositoryStoreImpl
+import com.ducanh.musicappdemo.ui.viewmodel.MusicViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -94,5 +95,11 @@ object AppModule {
     @Singleton
     fun provideWordDao(songDatabase: SongDatabase): SongDao {
         return songDatabase.songDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMusicViewModel(): MusicViewModel {
+        return MusicViewModel()
     }
 }

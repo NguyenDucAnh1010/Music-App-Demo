@@ -1,10 +1,7 @@
 package com.ducanh.musicappdemo.ui
 
-import android.media.MediaPlayer
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.widget.SeekBar
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -15,16 +12,21 @@ import androidx.viewpager2.widget.ViewPager2
 import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.ActivityDetailBinding
+import com.ducanh.musicappdemo.presentation.service.MusicService
 import com.ducanh.musicappdemo.ui.adapter.ImagePagerAdapter
 import com.ducanh.musicappdemo.ui.viewmodel.DiscoverViewModel
+import com.ducanh.musicappdemo.ui.viewmodel.MusicViewModel
 import com.ducanh.musicappdemo.utlis.Utils.convertSecondsToMinutes
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
-    private var mediaPlayer: MediaPlayer? = null
-    private lateinit var handler: Handler
+
+    @Inject
+    lateinit var viewModelMusic: MusicViewModel
+
 
     private val viewModel: DiscoverViewModel by viewModels()
 
@@ -43,30 +45,14 @@ class DetailActivity : AppCompatActivity() {
             insets
         }
 
-        handler = Handler(Looper.getMainLooper())
 
         val song = intent.getSerializableExtra("song") as? Song
         song?.let {
-            binding.barMusicPlayerSong.tvSongTitle.text = song.title
-            binding.barMusicPlayerSong.tvArtist.text = song.artist
+            binding.barMusicPlayerSong.tvSongTitle.text = it.title
+            binding.barMusicPlayerSong.tvArtist.text = it.artist
             binding.barMusicPlayerSong.tvTimeSong.text = convertSecondsToMinutes(it.duration)
-            binding.barMusicPlayerSong.seekSpeed.max = it.duration *1000
+            binding.barMusicPlayerSong.seekSpeed.max = it.duration * 1000
         }
-
-//        mediaPlayer?.setOnPreparedListener {
-//            mediaPlayer?.start()
-//            updateSeekBar()
-//        }
-
-        binding.barMusicPlayerSong.seekSpeed.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) mediaPlayer?.seekTo(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
 
         val images = mutableListOf<Song>()
 
@@ -98,12 +84,40 @@ class DetailActivity : AppCompatActivity() {
 
         viewModel.url.observe(this) {
             it?.let {
-                playAudio(it)
+                sendMusicCommand("PLAY", it)
             }
         }
 
         song?.path?.let {
             viewModel.getSongApi("https://zingmp3.vn${song.path}")
+        }
+
+        binding.barMusicPlayerSong.seekSpeed.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) sendMusicCommand("SEEK", progress = progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+        })
+
+        binding.barMusicPlayerSong.ivPlayPause.setOnClickListener {
+            sendMusicCommand(if (binding.barMusicPlayerSong.ivPlayPause.tag == "playing") "PAUSE" else "RESUME")
+        }
+
+        viewModelMusic.isPlaying.observe(this) { isPlaying ->
+            binding.barMusicPlayerSong.ivPlayPause.setImageResource(
+                if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_arrow_filled
+            )
+        }
+
+        viewModelMusic.currentPosition.observe(this) { currentPosition ->
+            binding.barMusicPlayerSong.seekSpeed.progress = currentPosition
+            binding.barMusicPlayerSong.tvTimeRun.text =
+                convertSecondsToMinutes(currentPosition / 1000)
         }
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -115,6 +129,7 @@ class DetailActivity : AppCompatActivity() {
                     binding.barMusicPlayerSong.tvArtist.text = it.artist
                     binding.barMusicPlayerSong.tvTimeSong.text =
                         convertSecondsToMinutes(it.duration)
+                    viewModel.getSongApi("https://zingmp3.vn${it.path}")
                 }
             }
         })
@@ -122,45 +137,16 @@ class DetailActivity : AppCompatActivity() {
         viewModel.getAllSongApi()
     }
 
-    private fun playAudio(audioUrl: String) {
-        try {
-            // Nếu đang phát nhạc, dừng lại trước
-            mediaPlayer?.release()
-
-            // Tạo MediaPlayer mới
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(audioUrl) // Cài đặt URL
-                prepareAsync() // Chuẩn bị phát nhạc (không chặn UI)
-                setOnPreparedListener {
-                    start() // Phát khi đã sẵn sàng
-                    updateSeekBar()
-                }
-                setOnCompletionListener {
-                    Log.d("MediaPlayer", "Nhạc đã phát xong")
-                }
-                setOnErrorListener { _, what, extra ->
-                    Log.e("MediaPlayer", "Lỗi phát nhạc: what=$what, extra=$extra")
-                    false
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun sendMusicCommand(action: String, url: String? = null, progress: Int? = null) {
+        val intent = Intent(this, MusicService::class.java).apply {
+            putExtra("action", action)
+            url?.let { putExtra("url", it) }
+            progress?.let { putExtra("progress", progress) }
         }
-    }
-
-    private fun updateSeekBar() {
-        mediaPlayer?.let { player ->
-            binding.barMusicPlayerSong.seekSpeed.progress = player.currentPosition
-            binding.barMusicPlayerSong.tvTimeRun.text = convertSecondsToMinutes(player.currentPosition/1000)
-
-            if (player.isPlaying) {
-                handler.postDelayed({ updateSeekBar() }, 1000)
-            }
-        }
+        startService(intent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer?.release()
     }
 }

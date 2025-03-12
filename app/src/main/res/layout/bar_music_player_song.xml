@@ -71,7 +71,7 @@
                 style="@style/font_regular_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00" />
+                android:text="0:00" />
 
             <View
                 android:layout_width="0dp"
@@ -84,7 +84,7 @@
                 style="@style/font_regular_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="04:00" />
+                android:text="4:00" />
         </LinearLayout>
 
         <SeekBar
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
-            android:layout_marginBottom="46dp"
+            android:layout_marginBottom="56dp"
             android:gravity="center"
             android:orientation="horizontal">
 

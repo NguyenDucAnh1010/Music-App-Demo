@@ -11,7 +11,11 @@ class SongRepositoryImpl @Inject constructor(private val dao: SongDao) : SongRep
         return dao.getAllFavoriteSong()
     }
 
-    override suspend fun updateSong(song: Song) {
-        dao.updateSong(song)
+    override suspend fun insertSong(song: Song) {
+        dao.insertSong(song)
+    }
+
+    override suspend fun getFavoriteSongById(songId: String): Song? {
+        return dao.getFavoriteSongById(songId)
     }
 }

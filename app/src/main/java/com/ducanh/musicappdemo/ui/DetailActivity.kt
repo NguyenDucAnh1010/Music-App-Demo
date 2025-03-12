@@ -27,7 +27,6 @@ class DetailActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelMusic: MusicViewModel
 
-
     private val viewModel: DiscoverViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +51,15 @@ class DetailActivity : AppCompatActivity() {
             binding.barMusicPlayerSong.tvArtist.text = it.artist
             binding.barMusicPlayerSong.tvTimeSong.text = convertSecondsToMinutes(it.duration)
             binding.barMusicPlayerSong.seekSpeed.max = it.duration * 1000
+            viewModel.getFavoriteSong(it.id)
+            viewModel.getSongApi("https://zingmp3.vn${song.path}")
+        }
+
+        viewModel.favoriteSong.observe(this) {
+            it?.let {
+                binding.barMusicPlayerSong.ivHeart.setImageResource(R.drawable.ic_select_favorite)
+            }
+                ?: binding.barMusicPlayerSong.ivHeart.setImageResource(R.drawable.ic_unselect_favorite)
         }
 
         val images = mutableListOf<Song>()
@@ -88,24 +96,52 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        song?.path?.let {
-            viewModel.getSongApi("https://zingmp3.vn${song.path}")
+        binding.barMusicPlayerSong.ivHeart.setOnClickListener {
+            song?.let {
+                viewModel.insertFavoriteSong(it)
+                binding.barMusicPlayerSong.ivHeart.setImageResource(R.drawable.ic_select_favorite)
+            }
         }
 
         binding.barMusicPlayerSong.seekSpeed.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) sendMusicCommand("SEEK", progress = progress)
+
+                if (progress == seekBar?.max) {
+                    val nextItem = binding.viewPager.currentItem + 1
+                    if (nextItem < viewModel.songs.value?.count() ?: 0) {
+                        binding.viewPager.setCurrentItem(nextItem)
+                    }
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
         binding.barMusicPlayerSong.ivPlayPause.setOnClickListener {
-            sendMusicCommand(if (binding.barMusicPlayerSong.ivPlayPause.tag == "playing") "PAUSE" else "RESUME")
+            sendMusicCommand(if (viewModelMusic.isPlaying.value ?: true) "PAUSE" else "RESUME")
+        }
+
+        binding.barMusicPlayerSong.ivNext.setOnClickListener {
+            val nextItem = binding.viewPager.currentItem + 1
+            if (nextItem < viewModel.songs.value?.count() ?: 0) {
+                binding.viewPager.setCurrentItem(nextItem)
+            }
+        }
+
+        binding.barMusicPlayerSong.ivPrev.setOnClickListener {
+            val nextItem = binding.viewPager.currentItem - 1
+            if (nextItem >= 0) {
+                viewModelMusic.currentPosition.value?.let {
+                    if (it > 20000) {
+                        sendMusicCommand("SEEK", progress = 0)
+                    } else {
+                        binding.viewPager.setCurrentItem(nextItem)
+                    }
+                }
+            }
         }
 
         viewModelMusic.isPlaying.observe(this) { isPlaying ->
@@ -127,9 +163,13 @@ class DetailActivity : AppCompatActivity() {
                 currentSong?.let {
                     binding.barMusicPlayerSong.tvSongTitle.text = it.title
                     binding.barMusicPlayerSong.tvArtist.text = it.artist
+                    binding.barMusicPlayerSong.tvTimeRun.text = "0:00"
+                    binding.barMusicPlayerSong.seekSpeed.progress = 0
+                    binding.barMusicPlayerSong.seekSpeed.max = it.duration * 1000
                     binding.barMusicPlayerSong.tvTimeSong.text =
                         convertSecondsToMinutes(it.duration)
                     viewModel.getSongApi("https://zingmp3.vn${it.path}")
+                    viewModel.getFavoriteSong(it.id)
                 }
             }
         })
@@ -144,9 +184,5 @@ class DetailActivity : AppCompatActivity() {
             progress?.let { putExtra("progress", progress) }
         }
         startService(intent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

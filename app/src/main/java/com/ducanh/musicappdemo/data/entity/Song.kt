@@ -12,5 +12,6 @@ data class Song(
     @SerializedName("title") val title: String,
     @SerializedName("artists_names") val artist: String,
     @SerializedName("thumbnail") val thumbnail: String,
-    val path: String
+    @SerializedName("link") val path: String,
+    @SerializedName("duration") val duration: Int
 ):Serializable

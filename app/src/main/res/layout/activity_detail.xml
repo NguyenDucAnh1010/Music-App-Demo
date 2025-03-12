@@ -18,7 +18,7 @@
             android:paddingTop="34dp"
             android:paddingLeft="30dp"
             android:paddingRight="24dp"
-            android:paddingBottom="60dp"
+            android:paddingBottom="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -73,7 +73,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-            <include layout="@layout/bar_music_player_song"/>
+            <include android:id="@+id/bar_music_player_song"
+                layout="@layout/bar_music_player_song"/>
         </FrameLayout>
     </LinearLayout>
 </layout>

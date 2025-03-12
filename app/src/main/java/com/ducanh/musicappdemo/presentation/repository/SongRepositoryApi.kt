@@ -4,4 +4,7 @@ import com.ducanh.musicappdemo.data.entity.Song
 
 interface SongRepositoryApi {
     suspend fun fetchSongs(): List<Song>
+    suspend fun getSongInfo(
+        link: String
+    ): String?
 }

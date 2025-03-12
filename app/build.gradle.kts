@@ -76,4 +76,7 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.jsoup)
 }

@@ -7,7 +7,8 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
 @ViewModelScoped
-class SongRespositoryStoreImpl @Inject constructor(private val context: Context):SongRespositoryStore {
+class SongRespositoryStoreImpl @Inject constructor(private val context: Context) :
+    SongRespositoryStore {
     override fun getAllMySongs(): List<Song> {
         val songList = mutableListOf<Song>()
 
@@ -16,7 +17,8 @@ class SongRespositoryStoreImpl @Inject constructor(private val context: Context)
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DATA
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DURATION
         )
 
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
@@ -27,14 +29,16 @@ class SongRespositoryStoreImpl @Inject constructor(private val context: Context)
             val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
             val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
             val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getString(idColumn)
                 val title = cursor.getString(titleColumn)
                 val artist = cursor.getString(artistColumn)
                 val data = cursor.getString(dataColumn)
+                val duration = cursor.getInt(durationColumn)
 
-                songList.add(Song(id, title, artist,"", data))
+                songList.add(Song(id, title, artist, "", data, duration))
             }
         }
         return songList

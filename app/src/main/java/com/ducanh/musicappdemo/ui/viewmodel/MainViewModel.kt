@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ducanh.musicappdemo.data.entity.Song
-import com.ducanh.musicappdemo.presentation.repository.SongRepository
+import com.ducanh.musicappdemo.presentation.repository.SongFavoriteRepository
+import com.ducanh.musicappdemo.presentation.repository.SongOfflineRepository
+import com.ducanh.musicappdemo.presentation.repository.SongOnlineRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: SongRepository
+    private val songOnlinePository: SongOnlineRepository,
+    private val songOfflinePository: SongOfflineRepository,
+    private val songFavoritePository: SongFavoriteRepository
 ) :
     ViewModel() {
     private val _songs = MutableLiveData<List<Song>>(listOf())
@@ -33,13 +37,13 @@ class MainViewModel @Inject constructor(
 
     fun getAllSongApi() {
         viewModelScope.launch(Dispatchers.IO) {
-            _songs.postValue(repository.fetchSongs())
+            _songs.postValue(songOnlinePository.fetchSongs())
         }
     }
 
     fun getSongApi(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getSongInfo(url)?.let {
+            songOnlinePository.getSongInfo(url)?.let {
                 _url.postValue(it)
             }
         }
@@ -47,31 +51,31 @@ class MainViewModel @Inject constructor(
 
     fun insertFavoriteSong(song: Song) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insertSong(song)
+            songFavoritePository.insertSong(song)
         }
     }
 
     fun getFavoriteSong(songId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _favoriteSong.postValue(repository.getFavoriteSongById(songId))
+            _favoriteSong.postValue(songFavoritePository.getFavoriteSongById(songId))
         }
     }
 
     fun deleteFavoriteSong(song: Song) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteSong(song)
+            songFavoritePository.deleteSong(song)
         }
     }
 
     fun getAllFavoriteSong() {
         viewModelScope.launch(Dispatchers.IO) {
-            _favoriteSongs.postValue(repository.getAllFavoriteSong())
+            _favoriteSongs.postValue(songFavoritePository.getAllFavoriteSong())
         }
     }
 
     fun getAllMySongs() {
         viewModelScope.launch(Dispatchers.IO) {
-            _mySongs.postValue(repository.getAllMySongs())
+            _mySongs.postValue(songOfflinePository.getAllMySongs())
         }
     }
 }

@@ -6,8 +6,12 @@ import androidx.room.Room
 import com.ducanh.musicappdemo.data.api.ApiService
 import com.ducanh.musicappdemo.data.dao.SongDao
 import com.ducanh.musicappdemo.data.database.SongDatabase
-import com.ducanh.musicappdemo.presentation.repository.SongRepository
-import com.ducanh.musicappdemo.presentation.repository.SongRepositoryImpl
+import com.ducanh.musicappdemo.presentation.repository.SongFavoriteRepository
+import com.ducanh.musicappdemo.presentation.repository.SongFavoriteRepositoryImpl
+import com.ducanh.musicappdemo.presentation.repository.SongOfflineRepository
+import com.ducanh.musicappdemo.presentation.repository.SongOfflineRepositoryImpl
+import com.ducanh.musicappdemo.presentation.repository.SongOnlineRepository
+import com.ducanh.musicappdemo.presentation.repository.SongOnlineRepositoryImpl
 import com.ducanh.musicappdemo.ui.viewmodel.MusicViewModel
 import dagger.Module
 import dagger.Provides
@@ -28,8 +32,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: ApiService,songDao: SongDao,@ApplicationContext context: Context): SongRepository {
-        return SongRepositoryImpl(api,songDao,context)
+    fun provideSongOnlineRepository(api: ApiService): SongOnlineRepository {
+        return SongOnlineRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSongOfflineRepository(@ApplicationContext context: Context): SongOfflineRepository {
+        return SongOfflineRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSongFavoriteRepository(songDao: SongDao): SongFavoriteRepository {
+        return SongFavoriteRepositoryImpl(songDao)
     }
 
     val logging = HttpLoggingInterceptor().apply {

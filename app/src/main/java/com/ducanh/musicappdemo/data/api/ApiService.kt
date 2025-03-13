@@ -3,7 +3,6 @@ package com.ducanh.musicappdemo.data.api
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.data.entity.SongResponse
 import okhttp3.MultipartBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart

@@ -12,57 +12,9 @@ import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @ViewModelScoped
-class SongRepositoryImpl @Inject constructor(
-    private val api: ApiService,
-    private val dao: SongDao,
+class SongOfflineRepositoryImpl @Inject constructor(
     private val context: Context
-) : SongRepository {
-    override suspend fun getAllFavoriteSong(): List<Song> {
-        return dao.getAllFavoriteSong()
-    }
-
-    override suspend fun insertSong(song: Song) {
-        dao.insertSong(song)
-    }
-
-    override suspend fun getFavoriteSongById(songId: String): Song? {
-        return dao.getFavoriteSongById(songId)
-    }
-
-    override suspend fun deleteSong(song: Song) {
-        dao.deleteSong(song)
-    }
-
-    override suspend fun fetchSongs(): List<Song> {
-        return api.getSongs()
-    }
-
-    override suspend fun getSongInfo(
-        link: String
-    ): String? {
-        val linkPart = MultipartBody.Part.createFormData(
-            "link", link
-        )
-
-        var songUrl: String? = null
-
-        val response = api.getSongInfo(linkPart)
-        if (response.isSuccessful) {
-            val htmlResponse = response.body()?.success
-            songUrl = extractAudioSrc(htmlResponse ?: "")
-
-            if (songUrl != null) {
-                Log.d("API", "🎵 Link bài hát: $songUrl")
-            } else {
-                Log.e("API", "❌ Không tìm thấy link nhạc!")
-            }
-        } else {
-            Log.e("API", "Lỗi: ${response.errorBody()?.string()}")
-        }
-
-        return songUrl
-    }
-
+) : SongOfflineRepository {
     override fun getAllMySongs(): List<Song> {
         val songList = mutableListOf<Song>()
 

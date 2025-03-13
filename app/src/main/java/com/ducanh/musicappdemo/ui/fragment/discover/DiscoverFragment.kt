@@ -1,6 +1,5 @@
 package com.ducanh.musicappdemo.ui.fragment.discover
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -42,7 +41,7 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
 
         binding.progressBar.visibility = View.VISIBLE
 
-        viewModel.songs.observe(viewLifecycleOwner) {
+        viewModel.discoverySongs.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 try {
                     binding.progressBar.visibility = View.VISIBLE
@@ -96,7 +95,8 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
         }
     }
 
-    override fun onItemClick(song: Song) {
+    override fun onItemClick(song: Song, position: Int) {
+        viewModel.updateCurrentTrackIndex(position)
         parentFragmentManager.beginTransaction()
             .replace(R.id.frdetail, DetailFragment.newInstance(song))
             .addToBackStack(null)

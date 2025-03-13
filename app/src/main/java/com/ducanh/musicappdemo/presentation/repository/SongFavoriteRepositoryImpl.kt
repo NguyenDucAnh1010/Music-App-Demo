@@ -1,14 +1,8 @@
 package com.ducanh.musicappdemo.presentation.repository
 
-import android.content.Context
-import android.provider.MediaStore
-import android.util.Log
-import com.ducanh.musicappdemo.data.api.ApiService
 import com.ducanh.musicappdemo.data.dao.SongDao
 import com.ducanh.musicappdemo.data.entity.Song
-import com.ducanh.musicappdemo.utlis.Utils.extractAudioSrc
 import dagger.hilt.android.scopes.ViewModelScoped
-import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @ViewModelScoped

@@ -36,20 +36,25 @@ class MusicService : Service() {
     override fun onCreate() {
         super.onCreate()
         mediaSession = MediaSessionCompat(this, "MusicService")
+        viewModel.url.observeForever { newUrl ->
+            newUrl?.let {
+                playAudio(it)
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent?.getStringExtra("action")
-        val url = intent?.getStringExtra("url")
         val progress = intent?.getIntExtra("progress", 0)
 
         when (action) {
             "PLAY" -> {
-                url?.let {
+                viewModel.url.value?.let {
                     startForegroundService()
                     playAudio(it)
                 }
             }
+
             "PAUSE" -> pauseMusic()
             "RESUME" -> resumeMusic()
             "STOP" -> stopMusic()
@@ -73,6 +78,21 @@ class MusicService : Service() {
             setOnCompletionListener {
                 viewModel.updatePlayingState(false)
                 updateNotification(isPlaying = false)
+                playNextTrack()
+            }
+        }
+    }
+
+    private fun playNextTrack() {
+        viewModel.songs.value?.let { songsList ->
+            val currentSongIndex = viewModel.currentTrackIndex.value!!
+            if (currentSongIndex + 1 < songsList.size) {
+                val nextSong = currentSongIndex + 1
+                viewModel.updateCurrentTrackIndex(nextSong)
+                viewModel.getSongApi("https://zingmp3.vn${songsList[nextSong].path}")
+            } else {
+                viewModel.updateCurrentTrackIndex(0)
+                viewModel.getSongApi("https://zingmp3.vn${songsList[0].path}")
             }
         }
     }
@@ -120,7 +140,8 @@ class MusicService : Service() {
 
     private fun updateNotification(isPlaying: Boolean) {
         val notification = buildNotification(isPlaying)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(1, notification)
     }
 
@@ -152,7 +173,12 @@ class MusicService : Service() {
         )
 
         val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         return NotificationCompat.Builder(this, "MUSIC_CHANNEL")
             .setContentTitle("Trình phát nhạc")

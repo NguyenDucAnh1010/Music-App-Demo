@@ -49,7 +49,9 @@ class MainViewModel @Inject constructor(
     fun getSongApi(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
             songOnlinePository.getSongInfo(url)?.let {
-                _url.postValue(it)
+                if (_url.value!=it){
+                    _url.postValue(it)
+                }
             }
         }
     }
@@ -94,11 +96,19 @@ class MainViewModel @Inject constructor(
     private val _currentPosition = MutableLiveData<Int>()
     val currentPosition: LiveData<Int> get() = _currentPosition
 
+    private val _currentTrackIndex = MutableLiveData<Int>(0)
+    val currentTrackIndex: LiveData<Int> get() = _currentTrackIndex
+
     fun updatePlayingState(isPlaying: Boolean) {
         _isPlaying.value = isPlaying
     }
 
     fun updateSeekPosition(position: Int) {
         _currentPosition.value = position
+    }
+
+    fun updateCurrentTrackIndex(index: Int) {
+        if (_currentTrackIndex.value != index)
+        _currentTrackIndex.value = index
     }
 }

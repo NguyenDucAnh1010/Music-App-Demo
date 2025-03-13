@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.ItemSongBinding
 
@@ -39,7 +38,7 @@ class SongAdapter(
 
 
         holder.itemView.setOnClickListener {
-            listener.onItemClick(item)
+            listener.onItemClick(item,position)
         }
     }
 

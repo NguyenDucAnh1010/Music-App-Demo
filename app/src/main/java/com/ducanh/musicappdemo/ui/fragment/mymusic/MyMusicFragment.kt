@@ -65,7 +65,7 @@ class MyMusicFragment : Fragment(), OnSongClickListener {
         return binding.root
     }
 
-    override fun onItemClick(song: Song) {
+    override fun onItemClick(song: Song, position: Int) {
 
     }
 }

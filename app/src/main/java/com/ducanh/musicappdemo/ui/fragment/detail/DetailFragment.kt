@@ -1,17 +1,16 @@
 package com.ducanh.musicappdemo.ui.fragment.detail
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentDetailBinding
-import com.ducanh.musicappdemo.databinding.FragmentDiscoverBinding
 import com.ducanh.musicappdemo.ui.adapter.ImagePagerAdapter
 import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import com.ducanh.musicappdemo.utlis.Utils.convertSecondsToMinutes
@@ -36,12 +35,7 @@ class DetailFragment : Fragment() {
 
         var song = arguments?.getSerializable("song") as? Song
         song?.let {
-            binding.barMusicPlayerSong.tvSongTitle.text = it.title
-            binding.barMusicPlayerSong.tvArtist.text = it.artist
-            binding.barMusicPlayerSong.tvTimeSong.text = convertSecondsToMinutes(it.duration - 1)
-            binding.barMusicPlayerSong.seekSpeed.max = (it.duration - 1) * 1000
-            viewModel.getFavoriteSong(it.id)
-            viewModel.getSongApi("https://zingmp3.vn${it.path}")
+            sendMusicCommand(requireContext())
         }
 
         viewModel.favoriteSong.observe(viewLifecycleOwner) {
@@ -64,10 +58,10 @@ class DetailFragment : Fragment() {
             }
         }
 
-        val images = mutableListOf<Song>()
-
         binding.viewPager.apply {
-            adapter = ImagePagerAdapter(images)
+            viewModel.songs.value?.let {
+                adapter = ImagePagerAdapter(it)
+            }
             offscreenPageLimit = 3
             setPageTransformer { page, position ->
                 val scale = 1 - 0.2f * kotlin.math.abs(position)
@@ -76,43 +70,10 @@ class DetailFragment : Fragment() {
             }
         }
 
-        viewModel.songs.observe(viewLifecycleOwner) {
-            if(it.isNullOrEmpty()){
-                viewModel.getAllSongApi()
-            }else{
-                binding.viewPager.adapter = ImagePagerAdapter(it)
-
-                val currentSongIndex = it.indexOfFirst { it.id == song?.id }
-
-                if (currentSongIndex != -1) {
-                    binding.viewPager.post {
-                        binding.viewPager.setCurrentItem(currentSongIndex, false)
-                    }
-                } else {
-                    binding.viewPager.post {
-                        binding.viewPager.setCurrentItem(0, false)
-                    }
-                }
-            }
-        }
-
-        viewModel.url.observe(viewLifecycleOwner) {
-            it?.let {
-                sendMusicCommand(requireContext(), "PLAY", it)
-            }
-        }
-
         binding.barMusicPlayerSong.seekSpeed.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) sendMusicCommand(requireContext(),"SEEK", progress = progress)
-
-                if (progress == seekBar?.max) {
-                    val nextItem = binding.viewPager.currentItem + 1
-                    if (nextItem < viewModel.songs.value?.count() ?: 0) {
-                        binding.viewPager.setCurrentItem(nextItem)
-                    }
-                }
+                if (fromUser) sendMusicCommand(requireContext(), "SEEK", progress = progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -120,7 +81,10 @@ class DetailFragment : Fragment() {
         })
 
         binding.barMusicPlayerSong.ivPlayPause.setOnClickListener {
-            sendMusicCommand(requireContext(),if (viewModel.isPlaying.value ?: true) "PAUSE" else "RESUME")
+            sendMusicCommand(
+                requireContext(),
+                if (viewModel.isPlaying.value ?: true) "PAUSE" else "RESUME"
+            )
         }
 
         binding.barMusicPlayerSong.ivNext.setOnClickListener {
@@ -135,7 +99,7 @@ class DetailFragment : Fragment() {
             if (nextItem >= 0) {
                 viewModel.currentPosition.value?.let {
                     if (it > 20000) {
-                        sendMusicCommand(requireContext(),"SEEK", progress = 0)
+                        sendMusicCommand(requireContext(), "SEEK", progress = 0)
                     } else {
                         binding.viewPager.setCurrentItem(nextItem)
                     }
@@ -155,6 +119,14 @@ class DetailFragment : Fragment() {
                 convertSecondsToMinutes(currentPosition / 1000)
         }
 
+        viewModel.currentTrackIndex.observe(viewLifecycleOwner) {
+            if (it != binding.viewPager.currentItem) {
+                binding.viewPager.post {
+                    binding.viewPager.setCurrentItem(it)
+                }
+            }
+        }
+
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -163,11 +135,11 @@ class DetailFragment : Fragment() {
                     song = currentSong
                     binding.barMusicPlayerSong.tvSongTitle.text = it.title
                     binding.barMusicPlayerSong.tvArtist.text = it.artist
-                    binding.barMusicPlayerSong.tvTimeRun.text = "0:00"
                     binding.barMusicPlayerSong.seekSpeed.progress = 0
                     binding.barMusicPlayerSong.seekSpeed.max = (it.duration - 1) * 1000
                     binding.barMusicPlayerSong.tvTimeSong.text =
                         convertSecondsToMinutes(it.duration - 1)
+                    viewModel.updateCurrentTrackIndex(position)
                     viewModel.getSongApi("https://zingmp3.vn${it.path}")
                     viewModel.getFavoriteSong(it.id)
                 }

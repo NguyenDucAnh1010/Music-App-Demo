@@ -18,10 +18,9 @@ object Utils {
         return String.format("%d:%02d", minutes, remainingSeconds)
     }
 
-    fun sendMusicCommand(context: Context,action: String, url: String? = null, progress: Int? = null) {
+    fun sendMusicCommand(context: Context,action: String? = null, progress: Int? = null) {
         val intent = Intent(context, MusicService::class.java).apply {
-            putExtra("action", action)
-            url?.let { putExtra("url", it) }
+            action?.let { putExtra("action", action) }
             progress?.let { putExtra("progress", progress) }
         }
         context.startService(intent)

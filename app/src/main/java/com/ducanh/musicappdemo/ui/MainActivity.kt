@@ -17,6 +17,7 @@ import com.ducanh.musicappdemo.ui.adapter.OnMenuClickListener
 import com.ducanh.musicappdemo.ui.fragment.discover.DiscoverFragment
 import com.ducanh.musicappdemo.ui.fragment.favorite.FavoriteFragment
 import com.ducanh.musicappdemo.ui.fragment.mymusic.MyMusicFragment
+import com.ducanh.musicappdemo.utlis.Utils.sendMusicCommand
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -66,6 +67,8 @@ class MainActivity : AppCompatActivity(), OnMenuClickListener {
         binding.rvMenu.adapter = MenuAdapter(menuItems,this)
 
         replaceFragment(DiscoverFragment())
+
+        sendMusicCommand(this)
     }
 
     override fun onItemClick(menuItem: MenuItem) {

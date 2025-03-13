@@ -34,9 +34,6 @@ class DetailFragment : Fragment() {
         }
 
         var song = arguments?.getSerializable("song") as? Song
-        song?.let {
-            sendMusicCommand(requireContext())
-        }
 
         viewModel.favoriteSong.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -91,6 +88,8 @@ class DetailFragment : Fragment() {
             val nextItem = binding.viewPager.currentItem + 1
             if (nextItem < viewModel.songs.value?.count() ?: 0) {
                 binding.viewPager.setCurrentItem(nextItem)
+            }else{
+                binding.viewPager.setCurrentItem(0)
             }
         }
 

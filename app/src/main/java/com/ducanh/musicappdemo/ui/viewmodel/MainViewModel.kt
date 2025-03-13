@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
     fun getSongApi(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
             songOnlinePository.getSongInfo(url)?.let {
-                if (_url.value!=it){
+                if (_url.value != it) {
                     _url.postValue(it)
                 }
             }
@@ -109,6 +109,6 @@ class MainViewModel @Inject constructor(
 
     fun updateCurrentTrackIndex(index: Int) {
         if (_currentTrackIndex.value != index)
-        _currentTrackIndex.value = index
+            _currentTrackIndex.value = index
     }
 }

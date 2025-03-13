@@ -98,23 +98,22 @@ class MusicService : Service() {
     }
 
     private fun pauseMusic() {
-        mediaPlayer?.pause()
         viewModel.updatePlayingState(false)
         updateNotification(isPlaying = false)
+        mediaPlayer?.pause()
     }
 
     private fun resumeMusic() {
-        mediaPlayer?.start()
         viewModel.updatePlayingState(true)
         updateNotification(isPlaying = true)
+        mediaPlayer?.start()
+        updateSeekBar()
     }
 
     private fun stopMusic() {
         mediaPlayer?.release()
         mediaPlayer = null
         viewModel.updatePlayingState(false)
-//        stopForeground(true)
-//        stopSelf()
     }
 
     private fun updateSeekBar() {
@@ -129,6 +128,8 @@ class MusicService : Service() {
     override fun onDestroy() {
         stopMusic()
         mediaSession.release()
+        stopForeground(true)
+        stopSelf()
         super.onDestroy()
     }
 
@@ -180,22 +181,22 @@ class MusicService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val song = viewModel.songs.value?.get(viewModel.currentTrackIndex.value!!)
         return NotificationCompat.Builder(this, "MUSIC_CHANNEL")
-            .setContentTitle("Trình phát nhạc")
-            .setContentText("Nhạc đang phát")
+            .setContentTitle(song?.title ?: "Bài hát")
+            .setContentText(song?.artist ?: "Tác giả")
             .setSmallIcon(R.drawable.ic_music_note)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_song))
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.bg_notification))
             .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession.sessionToken)
-//                    .setShowActionsInCompactView(1)
+                    .setShowActionsInCompactView(1)
             )
-            .addAction(NotificationCompat.Action(R.drawable.ic_back_arrow, "Previous", null))
-            .addAction(playPauseAction)
-            .addAction(NotificationCompat.Action(R.drawable.ic_next_arrow, "Next", null))
-            .addAction(stopAction)
+            .addAction(R.drawable.ic_back_arrow, "Previous", null)
+            .addAction(R.drawable.ic_pause_small, "Pause", null)
+            .addAction(R.drawable.ic_next_arrow, "Next", null)
             .setOngoing(isPlaying)
             .build()
     }

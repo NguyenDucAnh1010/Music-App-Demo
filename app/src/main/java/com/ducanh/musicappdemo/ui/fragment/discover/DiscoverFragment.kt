@@ -17,6 +17,7 @@ import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
 import com.ducanh.musicappdemo.ui.fragment.detail.DetailFragment
 import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
+import com.ducanh.musicappdemo.utlis.Utils.sendMusicCommand
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

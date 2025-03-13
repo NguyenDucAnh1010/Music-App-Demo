@@ -79,4 +79,6 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     implementation(libs.jsoup)
+
+    implementation(libs.androidx.media)
 }

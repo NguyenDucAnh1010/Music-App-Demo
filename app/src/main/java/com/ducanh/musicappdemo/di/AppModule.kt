@@ -7,11 +7,7 @@ import com.ducanh.musicappdemo.data.api.ApiService
 import com.ducanh.musicappdemo.data.dao.SongDao
 import com.ducanh.musicappdemo.data.database.SongDatabase
 import com.ducanh.musicappdemo.presentation.repository.SongRepository
-import com.ducanh.musicappdemo.presentation.repository.SongRepositoryApi
-import com.ducanh.musicappdemo.presentation.repository.SongRepositoryApiImpl
 import com.ducanh.musicappdemo.presentation.repository.SongRepositoryImpl
-import com.ducanh.musicappdemo.presentation.repository.SongRespositoryStore
-import com.ducanh.musicappdemo.presentation.repository.SongRespositoryStoreImpl
 import com.ducanh.musicappdemo.ui.viewmodel.MusicViewModel
 import dagger.Module
 import dagger.Provides
@@ -32,20 +28,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepositoryApi(apiService: ApiService): SongRepositoryApi {
-        return SongRepositoryApiImpl(apiService)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRepository(songDao: SongDao): SongRepository {
-        return SongRepositoryImpl(songDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRepositoryStore(@ApplicationContext context: Context): SongRespositoryStore {
-        return SongRespositoryStoreImpl(context)
+    fun provideRepository(api: ApiService,songDao: SongDao,@ApplicationContext context: Context): SongRepository {
+        return SongRepositoryImpl(api,songDao,context)
     }
 
     val logging = HttpLoggingInterceptor().apply {

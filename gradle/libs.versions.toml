@@ -17,6 +17,7 @@ material = "1.12.0"
 activity = "1.10.1"
 hiltAndroid = "2.51.1"
 constraintlayout = "2.2.1"
+media = "1.7.0"
 okhttp = "4.11.0"
 retrofit = "2.9.0"
 roomRuntime = "2.6.1"
@@ -28,6 +29,7 @@ navigationUiKtx = "2.6.0"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-media = { module = "androidx.media:media", version.ref = "media" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }

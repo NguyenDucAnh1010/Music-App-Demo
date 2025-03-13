@@ -1,6 +1,7 @@
 package com.ducanh.musicappdemo.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,4 +17,7 @@ interface SongDao {
 
     @Query("SELECT * FROM favoriteSong WHERE id = :songId")
     suspend fun getFavoriteSongById(songId: String): Song?
+
+    @Delete
+    suspend fun deleteSong(song: Song)
 }

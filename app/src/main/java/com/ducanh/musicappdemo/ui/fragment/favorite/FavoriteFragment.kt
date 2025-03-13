@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +14,7 @@ import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentFavoriteBinding
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
-import com.ducanh.musicappdemo.ui.viewmodel.FavoriteViewModel
+import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ class FavoriteFragment : Fragment(), OnSongClickListener {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FavoriteViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +36,7 @@ class FavoriteFragment : Fragment(), OnSongClickListener {
 
         binding.progressBar.visibility = View.VISIBLE
 
-        viewModel.songs.observe(viewLifecycleOwner) {
+        viewModel.favoriteSongs.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 try {
                     binding.progressBar.visibility = View.VISIBLE

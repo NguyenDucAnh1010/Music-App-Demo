@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -16,7 +16,7 @@ import com.ducanh.musicappdemo.databinding.FragmentDiscoverBinding
 import com.ducanh.musicappdemo.ui.DetailActivity
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
-import com.ducanh.musicappdemo.ui.viewmodel.DiscoverViewModel
+import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
     private var _binding: FragmentDiscoverBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DiscoverViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

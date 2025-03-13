@@ -11,11 +11,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentDiscoverBinding
-import com.ducanh.musicappdemo.ui.DetailActivity
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
+import com.ducanh.musicappdemo.ui.fragment.detail.DetailFragment
 import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -40,19 +41,6 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
         binding.swipeRefreshLayout.setOnRefreshListener(this)
 
         binding.progressBar.visibility = View.VISIBLE
-
-//        binding.rvSongs.setOnTouchListener { _, event ->
-//            if (binding.rvSongs.adapter?.itemCount == 0) {
-//                when (event.action) {
-//                    MotionEvent.ACTION_DOWN -> binding.swipeRefreshLayout.isRefreshing = true
-//                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-//                        binding.swipeRefreshLayout.isRefreshing = false
-//                        onRefresh()
-//                    }
-//                }
-//            }
-//            false
-//        }
 
         viewModel.songs.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
@@ -109,8 +97,9 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
     }
 
     override fun onItemClick(song: Song) {
-        val intent = Intent(requireContext(), DetailActivity::class.java)
-        intent.putExtra("song", song)
-        startActivity(intent)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frdetail, DetailFragment.newInstance(song))
+            .addToBackStack(null)
+            .commit()
     }
 }

@@ -23,6 +23,9 @@ class MainViewModel @Inject constructor(
     private val _songs = MutableLiveData<List<Song>>(listOf())
     val songs: LiveData<List<Song>> get() = _songs
 
+    private val _discoverySongs = MutableLiveData<List<Song>>(listOf())
+    val discoverySongs: LiveData<List<Song>> get() = _discoverySongs
+
     private val _favoriteSongs = MutableLiveData<List<Song>>(listOf())
     val favoriteSongs: LiveData<List<Song>> get() = _favoriteSongs
 
@@ -37,7 +40,9 @@ class MainViewModel @Inject constructor(
 
     fun getAllSongApi() {
         viewModelScope.launch(Dispatchers.IO) {
-            _songs.postValue(songOnlinePository.fetchSongs())
+            val songs = songOnlinePository.fetchSongs()
+            _discoverySongs.postValue(songs)
+            _songs.postValue(songs)
         }
     }
 
@@ -69,13 +74,31 @@ class MainViewModel @Inject constructor(
 
     fun getAllFavoriteSong() {
         viewModelScope.launch(Dispatchers.IO) {
-            _favoriteSongs.postValue(songFavoritePository.getAllFavoriteSong())
+            val songs = songFavoritePository.getAllFavoriteSong()
+            _favoriteSongs.postValue(songs)
+            _songs.postValue(songs)
         }
     }
 
     fun getAllMySongs() {
         viewModelScope.launch(Dispatchers.IO) {
-            _mySongs.postValue(songOfflinePository.getAllMySongs())
+            val songs = songOfflinePository.getAllMySongs()
+            _mySongs.postValue(songs)
+            _songs.postValue(songs)
         }
+    }
+
+    private val _isPlaying = MutableLiveData<Boolean>()
+    val isPlaying: LiveData<Boolean> get() = _isPlaying
+
+    private val _currentPosition = MutableLiveData<Int>()
+    val currentPosition: LiveData<Int> get() = _currentPosition
+
+    fun updatePlayingState(isPlaying: Boolean) {
+        _isPlaying.value = isPlaying
+    }
+
+    fun updateSeekPosition(position: Int) {
+        _currentPosition.value = position
     }
 }

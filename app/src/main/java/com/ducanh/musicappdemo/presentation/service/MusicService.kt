@@ -17,7 +17,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.ui.MainActivity
-import com.ducanh.musicappdemo.ui.viewmodel.MusicViewModel
+import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class MusicService : Service() {
 
     @Inject
-    lateinit var viewModelMusic: MusicViewModel
+    lateinit var viewModel: MainViewModel
 
     private var mediaPlayer: MediaPlayer? = null
     private var handler = Handler(Looper.getMainLooper())
@@ -65,13 +65,13 @@ class MusicService : Service() {
             setDataSource(url)
             prepareAsync()
             setOnPreparedListener {
-                viewModelMusic.updatePlayingState(true)
+                viewModel.updatePlayingState(true)
                 start()
                 updateSeekBar()
                 updateNotification(isPlaying = true)
             }
             setOnCompletionListener {
-                viewModelMusic.updatePlayingState(false)
+                viewModel.updatePlayingState(false)
                 updateNotification(isPlaying = false)
             }
         }
@@ -79,20 +79,20 @@ class MusicService : Service() {
 
     private fun pauseMusic() {
         mediaPlayer?.pause()
-        viewModelMusic.updatePlayingState(false)
+        viewModel.updatePlayingState(false)
         updateNotification(isPlaying = false)
     }
 
     private fun resumeMusic() {
         mediaPlayer?.start()
-        viewModelMusic.updatePlayingState(true)
+        viewModel.updatePlayingState(true)
         updateNotification(isPlaying = true)
     }
 
     private fun stopMusic() {
         mediaPlayer?.release()
         mediaPlayer = null
-        viewModelMusic.updatePlayingState(false)
+        viewModel.updatePlayingState(false)
 //        stopForeground(true)
 //        stopSelf()
     }
@@ -100,7 +100,7 @@ class MusicService : Service() {
     private fun updateSeekBar() {
         handler.postDelayed({
             mediaPlayer?.let {
-                viewModelMusic.updateSeekPosition(it.currentPosition)
+                viewModel.updateSeekPosition(it.currentPosition)
                 if (it.isPlaying) updateSeekBar()
             }
         }, 1000)

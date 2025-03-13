@@ -12,7 +12,7 @@ import com.ducanh.musicappdemo.presentation.repository.SongOfflineRepository
 import com.ducanh.musicappdemo.presentation.repository.SongOfflineRepositoryImpl
 import com.ducanh.musicappdemo.presentation.repository.SongOnlineRepository
 import com.ducanh.musicappdemo.presentation.repository.SongOnlineRepositoryImpl
-import com.ducanh.musicappdemo.ui.viewmodel.MusicViewModel
+import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -99,7 +99,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMusicViewModel(): MusicViewModel {
-        return MusicViewModel()
+    fun provideMainViewModel(
+        songOnlinePository: SongOnlineRepository,
+        songOfflinePository: SongOfflineRepository,
+        songFavoritePository: SongFavoriteRepository
+    ): MainViewModel {
+        return MainViewModel(songOnlinePository, songOfflinePository, songFavoritePository)
     }
 }

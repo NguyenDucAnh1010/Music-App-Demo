@@ -30,7 +30,7 @@ class SongOfflineRepositoryImpl @Inject constructor(
             val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
             val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
             val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
-            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getString(idColumn)
@@ -39,7 +39,7 @@ class SongOfflineRepositoryImpl @Inject constructor(
                 val data = cursor.getString(dataColumn)
                 val duration = cursor.getInt(durationColumn)
 
-                songList.add(Song(id, title, artist, "", data, duration))
+                songList.add(Song(id, title, artist, "", data, duration/1000))
             }
         }
         return songList

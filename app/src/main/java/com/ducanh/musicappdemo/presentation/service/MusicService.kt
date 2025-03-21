@@ -38,6 +38,7 @@ class MusicService : Service() {
         mediaSession = MediaSessionCompat(this, "MusicService")
         viewModel.url.observeForever { newUrl ->
             newUrl?.let {
+                startForegroundService()
                 playAudio(it)
             }
         }
@@ -65,55 +66,68 @@ class MusicService : Service() {
     }
 
     private fun playAudio(url: String) {
-        stopMusic()
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(url)
-            prepareAsync()
-            setOnPreparedListener {
-                viewModel.updatePlayingState(true)
-                start()
-                updateSeekBar()
-                updateNotification(isPlaying = true)
+        mediaPlayer?.release()
+        mediaPlayer = null
+        viewModel.updatePlayingState(false)
+
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(url)
+                prepareAsync()
+                setOnPreparedListener {
+                    viewModel.updatePlayingState(true)
+                    start()
+                    updateSeekBar()
+                }
+                setOnCompletionListener {
+                    viewModel.updatePlayingState(false)
+                    playNextTrack()
+                }
             }
-            setOnCompletionListener {
-                viewModel.updatePlayingState(false)
-                updateNotification(isPlaying = false)
-                playNextTrack()
-            }
+        } else {
+            mediaPlayer?.start()
+            viewModel.updatePlayingState(true)
         }
     }
 
     private fun playNextTrack() {
         viewModel.songs.value?.let { songsList ->
-            val currentSongIndex = viewModel.currentTrackIndex.value!!
-            if (currentSongIndex + 1 < songsList.size) {
-                val nextSong = currentSongIndex + 1
-                viewModel.updateCurrentTrackIndex(nextSong)
-                viewModel.getSongApi("https://zingmp3.vn${songsList[nextSong].path}")
-            } else {
-                viewModel.updateCurrentTrackIndex(0)
-                viewModel.getSongApi("https://zingmp3.vn${songsList[0].path}")
+            viewModel.currentTrackIndex.value?.let{
+                val currentSongIndex = it
+                if (currentSongIndex + 1 < songsList.size) {
+                    val nextSong = currentSongIndex + 1
+                    viewModel.updateCurrentTrackIndex(nextSong)
+                    viewModel.getSongApi("https://zingmp3.vn${songsList[nextSong].path}")
+                }
+//                else {
+//                    viewModel.updateCurrentTrackIndex(0)
+//                    viewModel.getSongApi("https://zingmp3.vn${songsList[0].path}")
+//                }
             }
         }
     }
 
     private fun pauseMusic() {
+        mediaPlayer?.pause()
         viewModel.updatePlayingState(false)
         updateNotification(isPlaying = false)
-        mediaPlayer?.pause()
     }
 
     private fun resumeMusic() {
+        mediaPlayer?.start()
         viewModel.updatePlayingState(true)
         updateNotification(isPlaying = true)
-        mediaPlayer?.start()
         updateSeekBar()
     }
 
     private fun stopMusic() {
-        mediaPlayer?.release()
-        mediaPlayer = null
+//        mediaPlayer?.release()
+//        mediaPlayer = null
+        mediaPlayer?.pause()
         viewModel.updatePlayingState(false)
+        stopForeground(true) // Xóa thông báo
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.cancel(1)
     }
 
     private fun updateSeekBar() {
@@ -129,12 +143,17 @@ class MusicService : Service() {
         stopMusic()
         mediaSession.release()
         stopForeground(true)
-        stopSelf()
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.cancel(1)
         super.onDestroy()
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        stopSelf()
+        super.onTaskRemoved(rootIntent)
+    }
+
     private fun startForegroundService() {
-        createNotificationChannel()
         val notification = buildNotification(isPlaying = true)
         startForeground(1, notification)
     }
@@ -166,7 +185,7 @@ class MusicService : Service() {
         }
 
         val stopAction = NotificationCompat.Action(
-            R.drawable.ic_pause_small, "Stop",
+            R.drawable.ic_close, "Stop",
             PendingIntent.getService(
                 this, 2, Intent(this, MusicService::class.java).putExtra("action", "STOP"),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -181,7 +200,7 @@ class MusicService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val song = viewModel.songs.value?.get(viewModel.currentTrackIndex.value!!)
+        val song = viewModel.songs.value?.get(viewModel.currentTrackIndex.value?:0)
         return NotificationCompat.Builder(this, "MUSIC_CHANNEL")
             .setContentTitle(song?.title ?: "Bài hát")
             .setContentText(song?.artist ?: "Tác giả")
@@ -195,21 +214,10 @@ class MusicService : Service() {
                     .setShowActionsInCompactView(1)
             )
             .addAction(R.drawable.ic_back_arrow, "Previous", null)
-            .addAction(R.drawable.ic_pause_small, "Pause", null)
+            .addAction(playPauseAction)
             .addAction(R.drawable.ic_next_arrow, "Next", null)
+            .addAction(stopAction)
             .setOngoing(isPlaying)
             .build()
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "MUSIC_CHANNEL",
-                "Nhạc nền",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
     }
 }

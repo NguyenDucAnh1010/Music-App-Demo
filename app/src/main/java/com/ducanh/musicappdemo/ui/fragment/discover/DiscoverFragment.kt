@@ -98,6 +98,7 @@ class DiscoverFragment : Fragment(), OnSongClickListener, SwipeRefreshLayout.OnR
 
     override fun onItemClick(song: Song, position: Int) {
         viewModel.updateCurrentTrackIndex(position)
+        viewModel.updateAllSong(viewModel.discoverySongs.value?: listOf())
         parentFragmentManager.beginTransaction()
             .replace(R.id.frdetail, DetailFragment.newInstance(song))
             .addToBackStack(null)

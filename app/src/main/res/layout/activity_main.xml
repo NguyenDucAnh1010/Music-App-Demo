@@ -38,7 +38,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
 
-                <include layout="@layout/bar_music_player"/>
+                <include
+                    android:id="@+id/bar_music_player"
+                    layout="@layout/bar_music_player" />
             </LinearLayout>
 
             <LinearLayout

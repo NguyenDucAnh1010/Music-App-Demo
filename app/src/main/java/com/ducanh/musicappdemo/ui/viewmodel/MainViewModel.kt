@@ -38,20 +38,39 @@ class MainViewModel @Inject constructor(
     private val _favoriteSong = MutableLiveData<Song?>(null)
     val favoriteSong: LiveData<Song?> get() = _favoriteSong
 
+    fun updateAllSong(songs:List<Song>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _songs.postValue(songs)
+        }
+    }
+
     fun getAllSongApi() {
         viewModelScope.launch(Dispatchers.IO) {
             val songs = songOnlinePository.fetchSongs()
             _discoverySongs.postValue(songs)
-            _songs.postValue(songs)
         }
     }
 
     fun getSongApi(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            songOnlinePository.getSongInfo(url)?.let {
-                if (_url.value != it) {
-                    _url.postValue(it)
+            if (url.startsWith("file://") || url.startsWith("/storage/emulated/0/") || url.startsWith("/sdcard/")) {
+                if (_url.value != url) {
+                    _url.postValue(url)
                 }
+            }else{
+                songOnlinePository.getSongInfo(url)?.let {
+                    if (_url.value != it) {
+                        _url.postValue(it)
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateSong(url: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (_url.value != url) {
+                _url.postValue(url)
             }
         }
     }
@@ -78,7 +97,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val songs = songFavoritePository.getAllFavoriteSong()
             _favoriteSongs.postValue(songs)
-            _songs.postValue(songs)
         }
     }
 
@@ -86,7 +104,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val songs = songOfflinePository.getAllMySongs()
             _mySongs.postValue(songs)
-            _songs.postValue(songs)
         }
     }
 
@@ -96,7 +113,7 @@ class MainViewModel @Inject constructor(
     private val _currentPosition = MutableLiveData<Int>()
     val currentPosition: LiveData<Int> get() = _currentPosition
 
-    private val _currentTrackIndex = MutableLiveData<Int>(0)
+    private val _currentTrackIndex = MutableLiveData<Int>()
     val currentTrackIndex: LiveData<Int> get() = _currentTrackIndex
 
     fun updatePlayingState(isPlaying: Boolean) {

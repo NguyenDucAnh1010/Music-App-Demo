@@ -10,10 +10,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ducanh.musicappdemo.R
 import com.ducanh.musicappdemo.data.entity.Song
 import com.ducanh.musicappdemo.databinding.FragmentFavoriteBinding
 import com.ducanh.musicappdemo.ui.adapter.OnSongClickListener
 import com.ducanh.musicappdemo.ui.adapter.SongAdapter
+import com.ducanh.musicappdemo.ui.fragment.detail.DetailFragment
 import com.ducanh.musicappdemo.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -66,6 +68,11 @@ class FavoriteFragment : Fragment(), OnSongClickListener {
     }
 
     override fun onItemClick(song: Song, position: Int) {
-
+        viewModel.updateCurrentTrackIndex(position)
+        viewModel.updateAllSong(viewModel.mySongs.value?: listOf())
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frdetail, DetailFragment.newInstance(song))
+            .addToBackStack(null)
+            .commit()
     }
 }

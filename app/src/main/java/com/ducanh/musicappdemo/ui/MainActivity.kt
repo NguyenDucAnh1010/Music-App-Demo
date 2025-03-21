@@ -2,6 +2,7 @@ package com.ducanh.musicappdemo.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.SeekBar
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -87,6 +88,16 @@ class MainActivity : AppCompatActivity(), OnMenuClickListener {
         viewModel.currentPosition.observe(this) { currentPosition ->
             binding.barMusicPlayer.seekSpeed.progress = currentPosition
         }
+
+        binding.barMusicPlayer.seekSpeed.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) sendMusicCommand(this@MainActivity, "SEEK", progress = progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
 
         viewModel.songs.observe(this) { songs ->
             if (songs.isNotEmpty()) {

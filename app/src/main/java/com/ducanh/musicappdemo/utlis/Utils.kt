@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import com.ducanh.musicappdemo.presentation.service.MusicService
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -23,7 +22,7 @@ object Utils {
         return String.format("%d:%02d", minutes, remainingSeconds)
     }
 
-    fun sendMusicCommand(context: Context,action: String? = null, progress: Int? = null) {
+    fun sendMusicCommand(context: Context, action: String? = null, progress: Int? = null) {
         val intent = Intent(context, MusicService::class.java).apply {
             action?.let { putExtra("action", action) }
             progress?.let { putExtra("progress", progress) }
@@ -42,13 +41,10 @@ object Utils {
         downloadManager.enqueue(request)
     }
 
-    fun deleteSong(context: Context, filePath: String): Boolean {
+    fun deleteSong(context: Context, filePath: String) {
         val file = File(filePath)
-        return if (file.exists()) {
+        if (file.exists()) {
             file.delete()
-        } else {
-            Log.d("DeleteSong", "File không tồn tại: $filePath")
-            false
         }
     }
 }

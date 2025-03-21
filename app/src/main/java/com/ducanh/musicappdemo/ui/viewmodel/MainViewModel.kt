@@ -38,6 +38,9 @@ class MainViewModel @Inject constructor(
     private val _favoriteSong = MutableLiveData<Song?>(null)
     val favoriteSong: LiveData<Song?> get() = _favoriteSong
 
+    private val _dowloaldSong = MutableLiveData<Song?>(null)
+    val dowloaldSong: LiveData<Song?> get() = _dowloaldSong
+
     fun updateAllSong(songs:List<Song>) {
         viewModelScope.launch(Dispatchers.IO) {
             _songs.postValue(songs)
@@ -104,6 +107,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val songs = songOfflinePository.getAllMySongs()
             _mySongs.postValue(songs)
+        }
+    }
+
+    fun getDowloaldSong(songId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val song = songOfflinePository.getSongById(songId)
+            _dowloaldSong.postValue(song)
         }
     }
 

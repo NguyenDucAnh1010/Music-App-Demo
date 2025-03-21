@@ -1,7 +1,6 @@
 package com.ducanh.musicappdemo.ui.fragment.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,10 +59,31 @@ class DetailFragment : Fragment() {
             }
         }
 
+        viewModel.dowloaldSong.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.ivDownl.setImageResource(R.drawable.ic_delete)
+                binding.ivDownl.setOnClickListener {
+                    song?.let {
+                        deleteSong(requireContext(), it.path)
+                        viewModel.getDowloaldSong(it.id)
+                    }
+
+                }
+            } else {
+                binding.ivDownl.setImageResource(R.drawable.ic_download)
+                binding.ivDownl.setOnClickListener {
+                    song?.let {
+                        downloadSong(requireContext(), it.path, it.title)
+                        viewModel.getDowloaldSong(it.id)
+                    }
+                }
+            }
+        }
+
         binding.viewPager.apply {
             viewModel.songs.value?.let {
                 adapter = ImagePagerAdapter(it)
-                val startPosition = viewModel.currentTrackIndex.value?:-1
+                val startPosition = viewModel.currentTrackIndex.value ?: -1
                 if (startPosition != -1) {
                     post { setCurrentItem(startPosition, false) }
                 }
@@ -97,7 +117,7 @@ class DetailFragment : Fragment() {
             val nextItem = binding.viewPager.currentItem + 1
             if (nextItem < viewModel.songs.value?.count() ?: 0) {
                 binding.viewPager.setCurrentItem(nextItem)
-            }else{
+            } else {
                 binding.viewPager.setCurrentItem(0)
             }
         }
@@ -135,14 +155,6 @@ class DetailFragment : Fragment() {
             }
         }
 
-        viewModel.url.observe(viewLifecycleOwner){ url ->
-            if (!url.isNullOrEmpty()){
-                binding.ivDownl.setOnClickListener {
-                    song?.let {  downloadSong(requireContext(), url, it.title)}
-                }
-            }
-        }
-
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -162,24 +174,17 @@ class DetailFragment : Fragment() {
                     binding.barMusicPlayerSong.seekSpeed.max = (it.duration - 1) * 1000
                     binding.barMusicPlayerSong.tvTimeSong.text =
                         convertSecondsToMinutes(it.duration - 1)
-                    if (songPath.startsWith("file://") || songPath.startsWith("/storage/emulated/0/") || songPath.startsWith("/sdcard/")) {
-                        binding.ivDownl.setImageResource(R.drawable.ic_delete)
-                        binding.ivDownl.setOnClickListener {
-                            val isDeleted = deleteSong(requireContext(), songPath)
-
-                            if (isDeleted) {
-                                Log.d("DeleteSong", "Xóa thành công")
-                            } else {
-                                Log.d("DeleteSong", "Xóa thất bại")
-                            }
-                        }
+                    if (songPath.startsWith("file://") || songPath.startsWith("/storage/emulated/0/") || songPath.startsWith(
+                            "/sdcard/"
+                        )
+                    ) {
                         viewModel.updateSong(songPath)
                     } else {
                         viewModel.getSongApi("https://zingmp3.vn${it.path}")
                     }
 
                     viewModel.getFavoriteSong(it.id)
-
+                    viewModel.getDowloaldSong(it.id)
                     viewModel.updateCurrentTrackIndex(position)
                 }
             }

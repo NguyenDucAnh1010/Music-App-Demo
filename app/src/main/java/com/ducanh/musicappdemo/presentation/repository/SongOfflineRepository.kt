@@ -4,4 +4,5 @@ import com.ducanh.musicappdemo.data.entity.Song
 
 interface SongOfflineRepository {
     fun getAllMySongs(): List<Song>
+    fun getSongById(songId: String): Song?
 }

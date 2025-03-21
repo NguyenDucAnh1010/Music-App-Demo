@@ -69,7 +69,7 @@ class FavoriteFragment : Fragment(), OnSongClickListener {
 
     override fun onItemClick(song: Song, position: Int) {
         viewModel.updateCurrentTrackIndex(position)
-        viewModel.updateAllSong(viewModel.mySongs.value?: listOf())
+        viewModel.updateAllSong(viewModel.favoriteSongs.value?: listOf())
         parentFragmentManager.beginTransaction()
             .replace(R.id.frdetail, DetailFragment.newInstance(song))
             .addToBackStack(null)
